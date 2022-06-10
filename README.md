@@ -1,20 +1,16 @@
 # Material Tag Editor
-
-## Breaking Changes for 0.0.6
-
-- Correct the spelling of `TagEditor`'s named parameter, `delimeters` to `delimiters`
-
-A simple tag editor for inputing tags.
+A simple tag editor.
 
 ![image](https://user-images.githubusercontent.com/18391546/82047483-dc8f0f00-96ed-11ea-8a91-7eaa64e2358b.gif)
 
 ## Usage
 
-Add the package to pubspec.yaml
-
-```dart
+To use this package, add `material_tag_editor` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
+```yaml
 dependencies:
-  material_tag_editor: x.x.x
+  material_tag_editor:
+    git:
+      url: https://github.com/LostInDarkMath/dash_chat.git
 ```
 
 Import it
@@ -52,9 +48,9 @@ It is possible to build the tag from your own widget, but it is recommended that
 ```dart
 class _Chip extends StatelessWidget {
   const _Chip({
-    @required this.label,
-    @required this.onDeleted,
-    @required this.index,
+    required this.label,
+    required this.onDeleted,
+    required this.index,
   });
 
   final String label;
@@ -77,3 +73,7 @@ class _Chip extends StatelessWidget {
   }
 }
 ```
+
+## Issues and feedback 💭
+
+If you have any suggestion for including a feature or if something doesn't work, feel free to open a Github [issue](https://github.com/LostInDarkMath/material_tag_editor/issues) for us to have a discussion on it.
