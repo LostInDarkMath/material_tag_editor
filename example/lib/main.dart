@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:material_tag_editor/tag_editor.dart';
+import 'package:material_tag_editor/tag_selector.dart';
 
 void main() => runApp(const MyApp());
 
@@ -57,6 +58,15 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Material Tag Editor Demo'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (context) => const TagSelectorDemo(),
+            ),
+          );
+        },
       ),
       body: Center(
         child: Padding(
@@ -135,6 +145,27 @@ class _Chip extends StatelessWidget {
       onDeleted: () {
         onDeleted(index);
       },
+    );
+  }
+}
+
+class TagSelectorDemo extends StatefulWidget {
+  const TagSelectorDemo({Key? key}) : super(key: key);
+
+  @override
+  State<TagSelectorDemo> createState() => _TagSelectorDemoState();
+}
+
+class _TagSelectorDemoState extends State<TagSelectorDemo> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Tag Selector Demo'),),
+      body: Column(
+        children: const [
+          TagSelector(),
+        ],
+      ),
     );
   }
 }
