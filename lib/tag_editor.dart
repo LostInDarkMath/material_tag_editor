@@ -102,7 +102,7 @@ class TagEditor extends StatefulWidget {
   final Brightness? keyboardAppearance;
 
   @override
-  _TagsEditorState createState() => _TagsEditorState();
+  State<TagEditor> createState() => _TagsEditorState();
 }
 
 class _TagsEditorState extends State<TagEditor> {
@@ -226,69 +226,65 @@ class _TagsEditorState extends State<TagEditor> {
           ))
         : widget.inputDecoration;
 
-    final tagEditorArea = Container(
-      child: TagLayout(
-        delegate: TagEditorLayoutDelegate(
-          length: widget.length,
-          minTextFieldWidth: widget.minTextFieldWidth,
-          spacing: widget.tagSpacing,
-        ),
-        children: List<Widget>.generate(
-              widget.length,
-              (index) => LayoutId(
-                id: TagEditorLayoutDelegate.getTagId(index),
-                child: widget.tagBuilder(context, index),
-              ),
-            ) +
-            <Widget>[
-              LayoutId(
-                id: TagEditorLayoutDelegate.textFieldId,
-                child: TextField(
-                  style: widget.textStyle,
-                  focusNode: _focusNode,
-                  enabled: widget.enabled,
-                  controller: _textFieldController,
-                  keyboardType: widget.keyboardType,
-                  keyboardAppearance: widget.keyboardAppearance,
-                  textCapitalization: widget.textCapitalization,
-                  textInputAction: widget.textInputAction,
-                  autocorrect: widget.autocorrect,
-                  textAlign: widget.textAlign,
-                  textDirection: widget.textDirection,
-                  readOnly: widget.readOnly,
-                  autofocus: widget.autofocus,
-                  enableSuggestions: widget.enableSuggestions,
-                  maxLines: widget.maxLines,
-                  decoration: decoration,
-                  onChanged: _onTextFieldChange,
-                  onSubmitted: _onSubmitted,
-                  inputFormatters: widget.inputFormatters,
-                ),
-              )
-            ],
+    final tagEditorArea = TagLayout(
+      delegate: TagEditorLayoutDelegate(
+        length: widget.length,
+        minTextFieldWidth: widget.minTextFieldWidth,
+        spacing: widget.tagSpacing,
       ),
+      children: List<Widget>.generate(
+            widget.length,
+            (index) => LayoutId(
+              id: TagEditorLayoutDelegate.getTagId(index),
+              child: widget.tagBuilder(context, index),
+            ),
+          ) +
+          <Widget>[
+            LayoutId(
+              id: TagEditorLayoutDelegate.textFieldId,
+              child: TextField(
+                style: widget.textStyle,
+                focusNode: _focusNode,
+                enabled: widget.enabled,
+                controller: _textFieldController,
+                keyboardType: widget.keyboardType,
+                keyboardAppearance: widget.keyboardAppearance,
+                textCapitalization: widget.textCapitalization,
+                textInputAction: widget.textInputAction,
+                autocorrect: widget.autocorrect,
+                textAlign: widget.textAlign,
+                textDirection: widget.textDirection,
+                readOnly: widget.readOnly,
+                autofocus: widget.autofocus,
+                enableSuggestions: widget.enableSuggestions,
+                maxLines: widget.maxLines,
+                decoration: decoration,
+                onChanged: _onTextFieldChange,
+                onSubmitted: _onSubmitted,
+                inputFormatters: widget.inputFormatters,
+              ),
+            )
+          ],
     );
 
     return widget.icon == null
         ? tagEditorArea
-        : Container(
-            child: Row(
-              children: <Widget>[
-                Container(
-                  width: 40,
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.zero,
-                  child: IconTheme.merge(
-                    data: IconThemeData(
-                      color: _getIconColor(Theme.of(context)),
-                      size: 18.0,
-                    ),
-                    child: Icon(widget.icon),
-                  ),
+        : Row(
+          children: <Widget>[
+            Container(
+              width: 40,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.zero,
+              child: IconTheme.merge(
+                data: IconThemeData(
+                  color: _getIconColor(Theme.of(context)),
+                  size: 18.0,
                 ),
-                Expanded(child: tagEditorArea),
-              ],
+                child: Icon(widget.icon),
+              ),
             ),
-          );
+            Expanded(child: tagEditorArea),
+          ],
+        );
   }
 }

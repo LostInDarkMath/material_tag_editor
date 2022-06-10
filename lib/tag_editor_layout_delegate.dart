@@ -54,7 +54,7 @@ class TagEditorLayoutDelegate extends MultiChildLayoutDelegate {
         final childSize = layoutChild(
           tagId,
           BoxConstraints.loose(
-            //* Let child specify it's own heigh so use infinity here
+            //* Let child specify it's own height so use infinity here
             Size(size.width, double.infinity),
           ),
         );
@@ -83,7 +83,7 @@ class TagEditorLayoutDelegate extends MultiChildLayoutDelegate {
 
     var textFieldSize = Size.zero;
 
-    //* Layout the textbox
+    //* Layout the text box
     if (hasChild(textFieldId)) {
       final currentRowWidth = tagSizes.fold<double>(0, (result, tag) {
         return result + tag.width;
@@ -91,7 +91,7 @@ class TagEditorLayoutDelegate extends MultiChildLayoutDelegate {
       final spacingWidth = spacing * max(tagSizes.length - 1, 0);
       final leftOverWidth = size.width - currentRowWidth - spacingWidth;
       final textWidth = max(leftOverWidth, minTextFieldWidth);
-      //* Check if Textbox is overflowing
+      //* Check if text box is overflowing
       //* Check if overflowing
       if (_isOverflow(
         childWidth: textWidth,

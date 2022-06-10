@@ -32,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _textEditingController = TextEditingController();
 
-  _onDelete(index) {
+  void _onDelete(int index) {
     setState(() {
       _values.removeAt(index);
     });
@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// This is just an example for using `TextEditingController` to manipulate
   /// the the `TextField` just like a normal `TextField`.
-  _onPressedModifyTextField() {
+  void _onPressedModifyTextField() {
     final text = 'Test';
     _textEditingController.text = text;
     _textEditingController.value = _textEditingController.value.copyWith(
