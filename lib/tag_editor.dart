@@ -1,9 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import './tag_editor_layout_delegate.dart';
 import './tag_layout.dart';
+
+const INVISIBLE = ' ';
 
 /// A [Widget] for editing tag similar to Google's Gmail
 /// email address input widget in the iOS app.
@@ -18,8 +19,9 @@ class TagEditor extends StatefulWidget {
     this.focusNode,
     this.hasAddButton = true,
     this.delimiters = const [],
-    this.icon,
+    this.icon = const Icon(Icons.add),
     this.enabled = true,
+    this.onBackspace,
     // TextField's properties
     this.controller,
     this.textStyle,
@@ -56,11 +58,14 @@ class TagEditor extends StatefulWidget {
   final bool hasAddButton;
 
   /// The icon for the add button enabled with `hasAddButton`.
-  final IconData? icon;
+  final Widget icon;
 
   /// Callback for when the tag changed. Use this to get the new tag and add
   /// it to the state.
   final ValueChanged<String> onTagChanged;
+
+  /// Callback for when backspace is pressed. Use this to remove the last tag from the list.
+  final VoidCallback? onBackspace;
 
   /// When the string value in this `delimiters` is found, a new tag will be
   /// created and `onTagChanged` is called.
@@ -113,7 +118,7 @@ class _TagsEditorState extends State<TagEditor> {
   var _previousText = '';
 
   /// A state for checking if the [TextFiled] has focus.
-  var _isFocused = false;
+  var _isFocused = false; // TODO used?
 
   /// Focus node for checking if the [TextField] is focused.
   late FocusNode _focusNode;
@@ -122,11 +127,12 @@ class _TagsEditorState extends State<TagEditor> {
   void initState() {
     super.initState();
     _textFieldController = (widget.controller ?? TextEditingController());
-    _focusNode = (widget.focusNode ?? FocusNode())
-      ..addListener(_onFocusChanged);
+    _focusNode = (widget.focusNode ?? FocusNode())..addListener(_onFocusChanged);
+    _resetTextField();
   }
 
   void _onFocusChanged() {
+    print('on focus changed');
     setState(() {
       _isFocused = _focusNode.hasFocus;
     });
@@ -139,27 +145,31 @@ class _TagsEditorState extends State<TagEditor> {
     }
   }
 
-  /// This function is still ugly, have to fix this later
+  // TODO check if pasting tags split them correctly
   void _onTextFieldChange(String string) {
     final previousText = _previousText;
     _previousText = string;
+    print('ENTERED: $string');
 
-    if (string.isEmpty || widget.delimiters.isEmpty) {
+    // Do not allow the entry of the delimiters, this does not account for when
+    // the text is set with `TextEditingController` the behaviour of TextEditingController
+    // should be controller by the developer themselves
+    if (string.length <= 2 && widget.delimiters.contains(string)) {
+      _resetTextField();
       return;
     }
 
-    // Do not allow the entry of the delimters, this does not account for when
-    // the text is set with `TextEditingController` the behaviour of TextEditingContoller
-    // should be controller by the developer themselves
-    if (string.length == 1 && widget.delimiters.contains(string)) {
-      _resetTextField();
-      return;
+    if(string.isEmpty) {
+      _resetTextField(); // add invisible character
+      widget.onBackspace?.call();
     }
 
     if (string.length > previousText.length) {
       // Add case
       final newChar = string[string.length - 1];
+
       if (widget.delimiters.contains(newChar)) {
+
         final targetString = string.substring(0, string.length - 1);
         if (targetString.isNotEmpty) {
           _onTagChanged(targetString);
@@ -176,115 +186,70 @@ class _TagsEditorState extends State<TagEditor> {
   }
 
   void _resetTextField() {
-    _textFieldController.text = '';
-    _previousText = '';
-  }
-
-  /// Shamelessly copied from [InputDecorator]
-  Color _getDefaultIconColor(ThemeData themeData) {
-    if (!widget.enabled) {
-      return themeData.disabledColor;
-    }
-
-    switch (themeData.brightness) {
-      case Brightness.dark:
-        return Colors.white70;
-      case Brightness.light:
-        return Colors.black45;
-    }
-  }
-
-  /// Shamelessly copied from [InputDecorator]
-  Color _getActiveColor(ThemeData themeData) {
-    if (_focusNode.hasFocus) {
-      switch (themeData.brightness) {
-        case Brightness.dark:
-          return themeData.colorScheme.secondary;
-        case Brightness.light:
-          return themeData.primaryColor;
-      }
-    }
-    return themeData.hintColor;
-  }
-
-  Color _getIconColor(ThemeData themeData) {
-    final themeData = Theme.of(context);
-    final activeColor = _getActiveColor(themeData);
-    return _isFocused ? activeColor : _getDefaultIconColor(themeData);
+    _previousText = INVISIBLE;
+    _textFieldController.value = TextEditingValue(
+      text: INVISIBLE,
+      selection: TextSelection.fromPosition(const TextPosition(offset: INVISIBLE.length)),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final decoration = widget.hasAddButton
-        ? widget.inputDecoration.copyWith(
-            suffixIcon: CupertinoButton(
+    InputDecoration decoration;
+
+    if (widget.hasAddButton){
+      decoration = widget.inputDecoration.copyWith(
+          suffixIcon: IconButton(
             padding: EdgeInsets.zero,
             onPressed: () {
               _onTagChanged(_textFieldController.text);
             },
-            child: const Icon(Icons.add),
-          ))
-        : widget.inputDecoration;
+            icon: widget.icon,
+          ));
+    } else {
+      decoration = widget.inputDecoration;
+    }
 
-    final tagEditorArea = TagLayout(
+    Widget textField = TextField(
+      style: widget.textStyle,
+      focusNode: _focusNode,
+      enabled: widget.enabled,
+      controller: _textFieldController,
+      keyboardType: widget.keyboardType,
+      keyboardAppearance: widget.keyboardAppearance,
+      textCapitalization: widget.textCapitalization,
+      textInputAction: widget.textInputAction,
+      autocorrect: widget.autocorrect,
+      textAlign: widget.textAlign,
+      textDirection: widget.textDirection,
+      readOnly: widget.readOnly,
+      autofocus: widget.autofocus,
+      enableSuggestions: widget.enableSuggestions,
+      maxLines: widget.maxLines,
+      decoration: decoration,
+      inputFormatters: widget.inputFormatters,
+      onChanged: _onTextFieldChange,
+      onSubmitted: _onSubmitted,
+    );
+
+    return TagLayout(
       delegate: TagEditorLayoutDelegate(
         length: widget.length,
         minTextFieldWidth: widget.minTextFieldWidth,
         spacing: widget.tagSpacing,
       ),
       children: List<Widget>.generate(
-            widget.length,
-            (index) => LayoutId(
-              id: TagEditorLayoutDelegate.getTagId(index),
-              child: widget.tagBuilder(context, index),
-            ),
-          ) +
-          <Widget>[
-            LayoutId(
-              id: TagEditorLayoutDelegate.textFieldId,
-              child: TextField(
-                style: widget.textStyle,
-                focusNode: _focusNode,
-                enabled: widget.enabled,
-                controller: _textFieldController,
-                keyboardType: widget.keyboardType,
-                keyboardAppearance: widget.keyboardAppearance,
-                textCapitalization: widget.textCapitalization,
-                textInputAction: widget.textInputAction,
-                autocorrect: widget.autocorrect,
-                textAlign: widget.textAlign,
-                textDirection: widget.textDirection,
-                readOnly: widget.readOnly,
-                autofocus: widget.autofocus,
-                enableSuggestions: widget.enableSuggestions,
-                maxLines: widget.maxLines,
-                decoration: decoration,
-                onChanged: _onTextFieldChange,
-                onSubmitted: _onSubmitted,
-                inputFormatters: widget.inputFormatters,
-              ),
-            )
-          ],
+        widget.length,
+        (index) => LayoutId(
+          id: TagEditorLayoutDelegate.getTagId(index),
+          child: widget.tagBuilder(context, index),
+        ),
+      ) + <Widget>[
+        LayoutId(
+          id: TagEditorLayoutDelegate.textFieldId,
+          child: textField,
+        )
+      ],
     );
-
-    return widget.icon == null
-        ? tagEditorArea
-        : Row(
-          children: <Widget>[
-            Container(
-              width: 40,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.zero,
-              child: IconTheme.merge(
-                data: IconThemeData(
-                  color: _getIconColor(Theme.of(context)),
-                  size: 18.0,
-                ),
-                child: Icon(widget.icon),
-              ),
-            ),
-            Expanded(child: tagEditorArea),
-          ],
-        );
   }
 }
