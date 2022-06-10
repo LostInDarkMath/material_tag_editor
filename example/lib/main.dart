@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 
 import 'package:material_tag_editor/tag_editor.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,24 +15,22 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Material Tag Editor Demo'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, this.title}) : super(key: key);
-
-  final String? title;
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<String> _values = [];
-  final FocusNode _focusNode = FocusNode();
-  final TextEditingController _textEditingController = TextEditingController();
+  final _values = <String>[];
+  final _focusNode = FocusNode();
+  final _textEditingController = TextEditingController();
 
   void _onDelete(int index) {
     setState(() {
@@ -41,11 +41,11 @@ class _MyHomePageState extends State<MyHomePage> {
   /// This is just an example for using `TextEditingController` to manipulate
   /// the the `TextField` just like a normal `TextField`.
   void _onPressedModifyTextField() {
-    final text = 'Test';
+    const text = 'Test';
     _textEditingController.text = text;
     _textEditingController.value = _textEditingController.value.copyWith(
       text: text,
-      selection: TextSelection(
+      selection: const TextSelection(
         baseOffset: text.length,
         extentOffset: text.length,
       ),
@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title ?? ''),
+        title: const Text('Material Tag Editor Demo'),
       ),
       body: Center(
         child: Padding(
@@ -67,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 length: _values.length,
                 controller: _textEditingController,
                 focusNode: _focusNode,
-                delimiters: [',', ' '],
+                delimiters: const [',', ' '],
                 hasAddButton: true,
                 resetTextOnSubmitted: true,
                 // This is set to grey just to illustrate the `textStyle` prop
@@ -102,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
               // or do whatever you want with it
               ElevatedButton(
                 onPressed: _onPressedModifyTextField,
-                child: const Text('Use Controlelr to Set Value'),
+                child: const Text('Use Controller to Set Value'),
               ),
             ],
           ),
