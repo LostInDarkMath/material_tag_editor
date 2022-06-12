@@ -46,17 +46,23 @@ class _TagSelectorState extends State<TagSelector> {
     });
   }
 
-  Future<void> onTagTap(Tag tag) async {
-    print('BEGIN EDIT: $tag');
+  Future<void> onTagTap(int index) async {
+    final Tag tagAtIndex = tags[index];
+    print('BEGIN EDIT: $tagAtIndex');
     await Navigator.push(
       context,
       MaterialPageRoute<void>(
         builder: (context) => EditScreen(
-          tag: tag,
+          tag: tagAtIndex,
+          onSubmit: (newTag){
+            print('new tag: $newTag');
+            tags.remove(tagAtIndex);
+            tags.insert(index, newTag);
+          },
         ),
       ),
     );
-    print('END EDIT');
+    print('END EDIT: $tags');
   }
 
   @override
@@ -73,7 +79,7 @@ class _TagSelectorState extends State<TagSelector> {
       controller: _textController,
       tagBuilder: (context, index) => TagChip(
         label: Text(tags[index].name),
-        onTap: () => onTagTap(tags[index]),
+        onTap: () => onTagTap(index),
       ),
     );
   }

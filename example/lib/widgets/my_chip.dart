@@ -29,6 +29,7 @@ class TagChip extends StatelessWidget {
         selectedColor: selectedColor ?? Theme.of(context).chipTheme.selectedColor,
         selected: false,
         tooltip: tooltip,
+        deleteButtonTooltipMessage: tooltip,
       ),
     );
   }
