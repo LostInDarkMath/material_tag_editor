@@ -51,7 +51,8 @@ class TagEditor extends StatefulWidget {
   /// The spacing between each tag
   final double tagSpacing;
 
-  /// Builder for building the tags, this usually use Flutter's Material `Chip`.
+  /// Builder for building the tags, this usually use Flutter's Material [Chip].
+  /// /// Take the [BuildContext] and the index as arguments;
   final Widget Function(BuildContext, int) tagBuilder;
 
   /// Show the add button to the right.
@@ -117,7 +118,7 @@ class _TagsEditorState extends State<TagEditor> {
   /// A state variable for checking if new text is enter.
   var _previousText = '';
 
-  /// A state for checking if the [TextFiled] has focus.
+  /// A state variable for checking if the [TextFiled] has focus.
   var _isFocused = false; // TODO used?
 
   /// Focus node for checking if the [TextField] is focused.
@@ -169,8 +170,8 @@ class _TagsEditorState extends State<TagEditor> {
       final newChar = string[string.length - 1];
 
       if (widget.delimiters.contains(newChar)) {
-
         final targetString = string.substring(0, string.length - 1);
+
         if (targetString.isNotEmpty) {
           _onTagChanged(targetString);
         }

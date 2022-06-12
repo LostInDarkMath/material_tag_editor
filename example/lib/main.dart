@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:material_tag_editor/tag_editor.dart';
-import 'package:material_tag_editor/tag_selector.dart';
+
+import 'widgets/tag_selector.dart';
 
 void main() => runApp(const MyApp());
 
