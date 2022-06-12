@@ -54,19 +54,12 @@ class _EditScreenState extends State<EditScreen> {
                 onChanged: (v) => description = v,
                 maxLines: 5, // multiline
               ),
-              Text('Gewichtung'),
+              const Text('Gewichtung'),
               Slider(
                 value: weight,
                 min: 0.5,
                 max: 2,
                 onChanged: (v) => setState(() => weight = v),
-              ),
-              RawChip(
-                deleteIcon: const Icon(Icons.edit),
-                tooltip: 'Edit',
-                deleteButtonTooltipMessage: 'Edit',
-                onDeleted: () => print('Foo'),
-                label: const Text('Foo'),
               ),
             ],
           ),
