@@ -10,7 +10,7 @@ To use this package, add `material_tag_editor` as a [dependency in your pubspec.
 dependencies:
   material_tag_editor:
     git:
-      url: https://github.com/LostInDarkMath/dash_chat.git
+      url: https://github.com/LostInDarkMath/material_tag_editor.git
 ```
 
 Import it
