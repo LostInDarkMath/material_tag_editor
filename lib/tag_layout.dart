@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import './tag_editor_layout_delegate.dart';
 import './tag_render_layout_box.dart';
 
-/// This is just a normal [CustomMultiChildLayout] with
-/// overrided [createRenderObject] to use custom [RenderCustomMultiChildLayoutBox]
+/// This is just a normal [CustomMultiChildLayout].
+/// We just overwrite [createRenderObject] to use custom [RenderCustomMultiChildLayoutBox].
 class TagLayout extends CustomMultiChildLayout {
   TagLayout({
     Key? key,

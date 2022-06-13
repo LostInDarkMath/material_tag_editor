@@ -51,7 +51,8 @@ class TagEditor extends StatefulWidget {
   /// The spacing between each tag
   final double tagSpacing;
 
-  /// Builder for building the tags, this usually use Flutter's Material `Chip`.
+  /// Builder for building the tags, this usually use Flutter's Material [Chip].
+  /// /// Take the [BuildContext] and the index as arguments;
   final Widget Function(BuildContext, int) tagBuilder;
 
   /// Show the add button to the right.
@@ -117,9 +118,6 @@ class _TagsEditorState extends State<TagEditor> {
   /// A state variable for checking if new text is enter.
   var _previousText = '';
 
-  /// A state for checking if the [TextFiled] has focus.
-  var _isFocused = false; // TODO used?
-
   /// Focus node for checking if the [TextField] is focused.
   late FocusNode _focusNode;
 
@@ -127,15 +125,8 @@ class _TagsEditorState extends State<TagEditor> {
   void initState() {
     super.initState();
     _textFieldController = (widget.controller ?? TextEditingController());
-    _focusNode = (widget.focusNode ?? FocusNode())..addListener(_onFocusChanged);
+    _focusNode = widget.focusNode ?? FocusNode();
     _resetTextField();
-  }
-
-  void _onFocusChanged() {
-    print('on focus changed');
-    setState(() {
-      _isFocused = _focusNode.hasFocus;
-    });
   }
 
   void _onTagChanged(String string) {
@@ -145,11 +136,9 @@ class _TagsEditorState extends State<TagEditor> {
     }
   }
 
-  // TODO check if pasting tags split them correctly
   void _onTextFieldChange(String string) {
     final previousText = _previousText;
     _previousText = string;
-    print('ENTERED: $string');
 
     // Do not allow the entry of the delimiters, this does not account for when
     // the text is set with `TextEditingController` the behaviour of TextEditingController
@@ -169,8 +158,8 @@ class _TagsEditorState extends State<TagEditor> {
       final newChar = string[string.length - 1];
 
       if (widget.delimiters.contains(newChar)) {
-
         final targetString = string.substring(0, string.length - 1);
+
         if (targetString.isNotEmpty) {
           _onTagChanged(targetString);
         }
@@ -199,13 +188,14 @@ class _TagsEditorState extends State<TagEditor> {
 
     if (widget.hasAddButton){
       decoration = widget.inputDecoration.copyWith(
-          suffixIcon: IconButton(
-            padding: EdgeInsets.zero,
-            onPressed: () {
-              _onTagChanged(_textFieldController.text);
-            },
-            icon: widget.icon,
-          ));
+        suffixIcon: IconButton(
+          padding: EdgeInsets.zero,
+          onPressed: () {
+            _onTagChanged(_textFieldController.text);
+          },
+          icon: widget.icon,
+        )
+      );
     } else {
       decoration = widget.inputDecoration;
     }
