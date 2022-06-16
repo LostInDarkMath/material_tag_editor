@@ -118,6 +118,10 @@ class _TagsEditorState extends State<TagEditor> {
   /// A state variable for checking if new text is enter.
   var _previousText = '';
 
+  /// A state variable for checking if the [TextFiled] has focus.
+  bool _isFocused = false;
+
+
   /// Focus node for checking if the [TextField] is focused.
   late FocusNode _focusNode;
 
@@ -125,8 +129,14 @@ class _TagsEditorState extends State<TagEditor> {
   void initState() {
     super.initState();
     _textFieldController = (widget.controller ?? TextEditingController());
-    _focusNode = widget.focusNode ?? FocusNode();
+    _focusNode = widget.focusNode ?? FocusNode()..addListener(_onFocusChanged);
     _resetTextField();
+  }
+
+  void _onFocusChanged() {
+    setState(() {
+      _isFocused = _focusNode.hasFocus;
+    });
   }
 
   void _onTagChanged(String string) {
@@ -216,30 +226,34 @@ class _TagsEditorState extends State<TagEditor> {
       autofocus: widget.autofocus,
       enableSuggestions: widget.enableSuggestions,
       maxLines: widget.maxLines,
-      decoration: decoration,
+      // decoration: decoration,
       inputFormatters: widget.inputFormatters,
       onChanged: _onTextFieldChange,
       onSubmitted: _onSubmitted,
     );
 
-    return TagLayout(
-      delegate: TagEditorLayoutDelegate(
-        length: widget.length,
-        minTextFieldWidth: widget.minTextFieldWidth,
-        spacing: widget.tagSpacing,
-      ),
-      children: List<Widget>.generate(
-        widget.length,
-        (index) => LayoutId(
-          id: TagEditorLayoutDelegate.getTagId(index),
-          child: widget.tagBuilder(context, index),
+    return InputDecorator(
+      isFocused: _isFocused,
+      decoration: widget.inputDecoration,
+      child: TagLayout(
+        delegate: TagEditorLayoutDelegate(
+          length: widget.length,
+          minTextFieldWidth: widget.minTextFieldWidth,
+          spacing: widget.tagSpacing,
         ),
-      ) + <Widget>[
-        LayoutId(
-          id: TagEditorLayoutDelegate.textFieldId,
-          child: textField,
-        )
-      ],
+        children: List<Widget>.generate(
+          widget.length,
+          (index) => LayoutId(
+            id: TagEditorLayoutDelegate.getTagId(index),
+            child: widget.tagBuilder(context, index),
+          ),
+        ) + <Widget>[
+          LayoutId(
+            id: TagEditorLayoutDelegate.textFieldId,
+            child: textField,
+          )
+        ],
+      ),
     );
   }
 }

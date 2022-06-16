@@ -1,3 +1,4 @@
+import 'package:example/widgets/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -88,9 +89,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     _values.add(outstandingValue);
                   });
                 },
-                inputDecoration: const InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Hint Text...',
+                inputDecoration: corpInputDecoration.copyWith(
+                  hintText: 'inputHintText',
+                  labelText: 'inputLabelText',
                 ),
                 onTagChanged: (newValue) {
                   setState(() {
@@ -115,6 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: _onPressedModifyTextField,
                 child: const Text('Use Controller to Set Value'),
               ),
+              TextFormField(),
             ],
           ),
         ),

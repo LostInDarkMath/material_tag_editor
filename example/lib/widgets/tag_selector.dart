@@ -1,3 +1,4 @@
+import 'package:example/widgets/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:material_tag_editor/tag_editor.dart';
 
@@ -77,6 +78,10 @@ class _TagSelectorState extends State<TagSelector> {
       onBackspace: onBackspace,
       resetTextOnSubmitted: true,
       controller: _textController,
+      inputDecoration: corpInputDecoration.copyWith(
+        hintText: 'inputHintText',
+        labelText: 'inputLabelText',
+      ),
       tagBuilder: (context, index) => TagChip(
         label: Text(tags[index].name),
         onTap: () => onTagTap(index),
