@@ -90,11 +90,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
                 inputDecorationOfContainer: corpInputDecoration.copyWith(
-                  hintText: 'inputHintText',
                   labelText: 'inputLabelText',
                 ),
-                inputDecorationOfTextField: const InputDecoration(
+                inputDecorationOfTextFieldWrapper: const InputDecoration(
                   hintText: 'Enter a tag here',
+                  border: InputBorder.none,
                 ),
                 onTagChanged: (newValue) {
                   setState(() {

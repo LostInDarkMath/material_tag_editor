@@ -83,8 +83,9 @@ class _TagSelectorState extends State<TagSelector> {
         inputDecorationOfContainer: corpInputDecoration.copyWith(
           labelText: 'Material Tag Editor advanced',
         ),
-        inputDecorationOfTextField: const InputDecoration(
-          hintText: 'enter a tag',
+        inputDecorationOfTextFieldWrapper: const InputDecoration(
+          hintText: ' enter a tag',
+          border: InputBorder.none,
         ),
         tagBuilder: (context, index) => TagChip(
           label: Text(tags[index].name),

@@ -10,7 +10,10 @@ import './tag_layout.dart';
 /// Note: '/u200b' does not work for me
 const INVISIBLE = '\u200a';
 
-const DEFAULT_INPUT_DECORATION = InputDecoration();
+const INPUT_DECORATION_DEFAULT = InputDecoration();
+const INPUT_DECORATION_DEFAULT_WITHOUT_UNDERLINE = InputDecoration(
+  border: InputBorder.none,
+);
 
 /// A [Widget] for editing tag similar to Google's Gmail
 /// email address input widget in the iOS app.
@@ -28,8 +31,9 @@ class TagEditor extends StatefulWidget {
     this.icon = const Icon(Icons.add),
     this.enabled = true,
     this.onBackspace,
-    this.inputDecorationOfContainer = DEFAULT_INPUT_DECORATION,
-    this.inputDecorationOfTextField = DEFAULT_INPUT_DECORATION,
+    this.inputDecorationOfContainer = INPUT_DECORATION_DEFAULT_WITHOUT_UNDERLINE,
+    this.inputDecorationOfTextField = INPUT_DECORATION_DEFAULT,
+    this.inputDecorationOfTextFieldWrapper = INPUT_DECORATION_DEFAULT_WITHOUT_UNDERLINE,
     // TextField's properties
     this.controller,
     this.textStyle,
@@ -97,6 +101,10 @@ class TagEditor extends StatefulWidget {
   /// The [InputDecoration] of the whole container which surrounds all tags ([Chip] widgets) and the [TextField].
   final InputDecoration inputDecorationOfContainer;
 
+  /// The [InputDecoration] of the [InputDecorator] that wraps the [TextField].
+  /// Use this to display a custom hint text for example.
+  final InputDecoration inputDecorationOfTextFieldWrapper;
+
   /// The [InputDecoration] only of the [TextField] only.
   final InputDecoration inputDecorationOfTextField;
 
@@ -162,7 +170,7 @@ class _TagsEditorState extends State<TagEditor> {
     final previousText = _previousText;
     _previousText = string;
 
-    if(widget.inputDecorationOfTextField != DEFAULT_INPUT_DECORATION) {
+    if(widget.inputDecorationOfTextFieldWrapper.hintText != null) {
       setState(() {}); // needed to update the hint text
     }
 
@@ -243,6 +251,7 @@ class _TagsEditorState extends State<TagEditor> {
       enableSuggestions: widget.enableSuggestions,
       maxLines: widget.maxLines,
       inputFormatters: widget.inputFormatters,
+      decoration: inputDecorationOfTextField,
       onChanged: _onTextFieldChange,
       onSubmitted: _onSubmitted,
     );
@@ -267,7 +276,7 @@ class _TagsEditorState extends State<TagEditor> {
             id: TagEditorLayoutDelegate.textFieldId,
             child: InputDecorator(
               isEmpty: _textFieldController.text.trim().isEmpty, // override the default isEmpty behavior to show hint text correctly
-              decoration: inputDecorationOfTextField,
+              decoration: widget.inputDecorationOfTextFieldWrapper,
               child: textField,
             ),
           )
