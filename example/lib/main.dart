@@ -89,9 +89,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     _values.add(outstandingValue);
                   });
                 },
-                inputDecoration: corpInputDecoration.copyWith(
+                inputDecorationOfContainer: corpInputDecoration.copyWith(
                   hintText: 'inputHintText',
                   labelText: 'inputLabelText',
+                ),
+                inputDecorationOfTextField: const InputDecoration(
+                  hintText: 'Enter a tag here',
                 ),
                 onTagChanged: (newValue) {
                   setState(() {

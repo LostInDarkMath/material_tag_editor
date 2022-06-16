@@ -68,23 +68,28 @@ class _TagSelectorState extends State<TagSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return TagEditor(
-      length: tags.length,
-      delimiters: const [',', ';'],
-      tagSpacing: 4.0,
-      hasAddButton: true,
-      onTagChanged: onTagAdded,
-      onSubmitted: onTagAdded,
-      onBackspace: onBackspace,
-      resetTextOnSubmitted: true,
-      controller: _textController,
-      inputDecoration: corpInputDecoration.copyWith(
-        hintText: 'inputHintText',
-        labelText: 'inputLabelText',
-      ),
-      tagBuilder: (context, index) => TagChip(
-        label: Text(tags[index].name),
-        onTap: () => onTagTap(index),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TagEditor(
+        length: tags.length,
+        delimiters: const [',', ';'],
+        tagSpacing: 4.0,
+        hasAddButton: true,
+        onTagChanged: onTagAdded,
+        onSubmitted: onTagAdded,
+        onBackspace: onBackspace,
+        resetTextOnSubmitted: true,
+        controller: _textController,
+        inputDecorationOfContainer: corpInputDecoration.copyWith(
+          labelText: 'Material Tag Editor advanced',
+        ),
+        inputDecorationOfTextField: const InputDecoration(
+          hintText: 'enter a tag',
+        ),
+        tagBuilder: (context, index) => TagChip(
+          label: Text(tags[index].name),
+          onTap: () => onTagTap(index),
+        ),
       ),
     );
   }

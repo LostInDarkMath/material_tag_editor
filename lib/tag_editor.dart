@@ -4,7 +4,13 @@ import 'package:flutter/services.dart';
 import './tag_editor_layout_delegate.dart';
 import './tag_layout.dart';
 
-const INVISIBLE = ' ';
+/// An invisible character that takes (almost) no space.
+/// See also https://medium.com/super-declarative/why-you-cant-detect-a-delete-action-in-an-empty-flutter-text-field-3cf53e47b631
+/// https://en.wikipedia.org/wiki/Whitespace_character
+/// Note: '/u200b' does not work for me
+const INVISIBLE = '\u200a';
+
+const DEFAULT_INPUT_DECORATION = InputDecoration();
 
 /// A [Widget] for editing tag similar to Google's Gmail
 /// email address input widget in the iOS app.
@@ -22,10 +28,11 @@ class TagEditor extends StatefulWidget {
     this.icon = const Icon(Icons.add),
     this.enabled = true,
     this.onBackspace,
+    this.inputDecorationOfContainer = DEFAULT_INPUT_DECORATION,
+    this.inputDecorationOfTextField = DEFAULT_INPUT_DECORATION,
     // TextField's properties
     this.controller,
     this.textStyle,
-    this.inputDecoration = const InputDecoration(),
     this.keyboardType,
     this.textInputAction,
     this.textCapitalization = TextCapitalization.none,
@@ -87,13 +94,18 @@ class TagEditor extends StatefulWidget {
   /// Focus node for checking if the [TextField] is focused.
   final FocusNode? focusNode;
 
+  /// The [InputDecoration] of the whole container which surrounds all tags ([Chip] widgets) and the [TextField].
+  final InputDecoration inputDecorationOfContainer;
+
+  /// The [InputDecoration] only of the [TextField] only.
+  final InputDecoration inputDecorationOfTextField;
+
   /// [TextField]'s properties.
   ///
   /// Please refer to [TextField] documentation.
   final TextEditingController? controller;
   final bool enabled;
   final TextStyle? textStyle;
-  final InputDecoration inputDecoration;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final TextCapitalization textCapitalization;
@@ -150,6 +162,10 @@ class _TagsEditorState extends State<TagEditor> {
     final previousText = _previousText;
     _previousText = string;
 
+    if(widget.inputDecorationOfTextField != DEFAULT_INPUT_DECORATION) {
+      setState(() {}); // needed to update the hint text
+    }
+
     // Do not allow the entry of the delimiters, this does not account for when
     // the text is set with `TextEditingController` the behaviour of TextEditingController
     // should be controller by the developer themselves
@@ -194,10 +210,10 @@ class _TagsEditorState extends State<TagEditor> {
 
   @override
   Widget build(BuildContext context) {
-    InputDecoration decoration;
+    InputDecoration inputDecorationOfTextField;
 
     if (widget.hasAddButton){
-      decoration = widget.inputDecoration.copyWith(
+      inputDecorationOfTextField = widget.inputDecorationOfTextField.copyWith(
         suffixIcon: IconButton(
           padding: EdgeInsets.zero,
           onPressed: () {
@@ -207,7 +223,7 @@ class _TagsEditorState extends State<TagEditor> {
         )
       );
     } else {
-      decoration = widget.inputDecoration;
+      inputDecorationOfTextField = widget.inputDecorationOfTextField;
     }
 
     Widget textField = TextField(
@@ -226,7 +242,6 @@ class _TagsEditorState extends State<TagEditor> {
       autofocus: widget.autofocus,
       enableSuggestions: widget.enableSuggestions,
       maxLines: widget.maxLines,
-      // decoration: decoration,
       inputFormatters: widget.inputFormatters,
       onChanged: _onTextFieldChange,
       onSubmitted: _onSubmitted,
@@ -234,7 +249,7 @@ class _TagsEditorState extends State<TagEditor> {
 
     return InputDecorator(
       isFocused: _isFocused,
-      decoration: widget.inputDecoration,
+      decoration: widget.inputDecorationOfContainer,
       child: TagLayout(
         delegate: TagEditorLayoutDelegate(
           length: widget.length,
@@ -250,7 +265,11 @@ class _TagsEditorState extends State<TagEditor> {
         ) + <Widget>[
           LayoutId(
             id: TagEditorLayoutDelegate.textFieldId,
-            child: textField,
+            child: InputDecorator(
+              isEmpty: _textFieldController.text.trim().isEmpty, // override the default isEmpty behavior to show hint text correctly
+              decoration: inputDecorationOfTextField,
+              child: textField,
+            ),
           )
         ],
       ),
