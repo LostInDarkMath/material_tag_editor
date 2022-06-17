@@ -41,6 +41,7 @@ class TagEditor extends StatefulWidget {
     this.textInputAction,
     this.textCapitalization = TextCapitalization.none,
     this.textAlign = TextAlign.start,
+    this.textAlignVertical = TextAlignVertical.center,
     this.textDirection,
     this.readOnly = false,
     this.autofocus = false,
@@ -118,6 +119,7 @@ class TagEditor extends StatefulWidget {
   final TextInputAction? textInputAction;
   final TextCapitalization textCapitalization;
   final TextAlign textAlign;
+  final TextAlignVertical textAlignVertical;
   final TextDirection? textDirection;
   final bool autofocus;
   final bool autocorrect;
@@ -245,6 +247,7 @@ class _TagsEditorState extends State<TagEditor> {
       textInputAction: widget.textInputAction,
       autocorrect: widget.autocorrect,
       textAlign: widget.textAlign,
+      textAlignVertical: widget.textAlignVertical,
       textDirection: widget.textDirection,
       readOnly: widget.readOnly,
       autofocus: widget.autofocus,
