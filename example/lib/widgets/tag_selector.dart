@@ -42,7 +42,7 @@ class _TagSelectorState extends State<TagSelector> {
 
     setState(() {
       final removedTag = tags.removeLast();
-      _textController.text = removedTag.name;
+      _textController.text = TagEditor.INVISIBLE + removedTag.name;
       _textController.selection = TextSelection.fromPosition(TextPosition(offset: _textController.text.length));
     });
   }

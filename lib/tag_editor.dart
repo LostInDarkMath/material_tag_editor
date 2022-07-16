@@ -4,12 +4,6 @@ import 'package:flutter/services.dart';
 import './tag_editor_layout_delegate.dart';
 import './tag_layout.dart';
 
-/// An invisible character that takes (almost) no space.
-/// See also https://medium.com/super-declarative/why-you-cant-detect-a-delete-action-in-an-empty-flutter-text-field-3cf53e47b631
-/// https://en.wikipedia.org/wiki/Whitespace_character
-/// Note: '/u200b' does not work for me
-const INVISIBLE = '\u200a';
-
 const INPUT_DECORATION_DEFAULT = InputDecoration();
 const INPUT_DECORATION_DEFAULT_WITHOUT_UNDERLINE = InputDecoration(
   border: InputBorder.none,
@@ -53,6 +47,13 @@ class TagEditor extends StatefulWidget {
     this.inputFormatters,
     this.keyboardAppearance,
   }) : super(key: key);
+
+  /// An invisible character that takes (almost) no space.
+  /// See also https://medium.com/super-declarative/why-you-cant-detect-a-delete-action-in-an-empty-flutter-text-field-3cf53e47b631
+  /// https://en.wikipedia.org/wiki/Whitespace_character
+  /// Note: '/u200b' does not work for me
+  static const INVISIBLE = '\u200a';
+
 
   /// The number of tags currently shown.
   final int length;
@@ -211,10 +212,10 @@ class _TagsEditorState extends State<TagEditor> {
   }
 
   void _resetTextField() {
-    _previousText = INVISIBLE;
+    _previousText = TagEditor.INVISIBLE;
     _textFieldController.value = TextEditingValue(
-      text: INVISIBLE,
-      selection: TextSelection.fromPosition(const TextPosition(offset: INVISIBLE.length)),
+      text: TagEditor.INVISIBLE,
+      selection: TextSelection.fromPosition(const TextPosition(offset: TagEditor.INVISIBLE.length)),
     );
   }
 
